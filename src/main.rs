@@ -35,6 +35,15 @@ fn solve1(input_file: &str) -> u32 {
     count_increments(&nums)
 }
 
+// Solution like the one below but using the sliding window built in to slices
+fn solve2a(input_file: &str) -> u32 {
+    let lines = file_to_lines(input_file).unwrap(); 
+    let nums = lines_to_nums(lines);
+    // let sums = it.map(|window| window.iter().sum()).collect();
+    let sums = nums.windows(3).map(|w| w[0] + w[1] + w[2]).collect();
+    count_increments(&sums)
+}
+
 // For part 2 I wanted to try out a crate to handle the sliding window of triples. It 
 // seems a bit overkill here, the ergonomics are not great.
 fn solve2(input_file: &str) -> u32 {
@@ -43,7 +52,9 @@ fn solve2(input_file: &str) -> u32 {
     let elements = vec![0u32,3];
     let mut storage = Storage::from_vec(elements, 3);
     let it = nums.into_iter().sliding_windows(&mut storage); 
-    let sums: Vec<u32> = it.map(|window| window.iter().sum()).collect();
+    // TODO Should be able to avoid the collect here and have count increments work with
+    // an iterator?
+    let sums = it.map(|window| window.iter().sum()).collect();
     count_increments(&sums)
 }
 
@@ -58,4 +69,7 @@ fn main() {
 
     println!("solve 2 example {:?}", solve2("data/example.txt"));
     println!("solve 2 input {:?}", solve2("data/input.txt"));
+
+    println!("solve 2a example {:?}", solve2a("data/example.txt"));
+    println!("solve 2a input {:?}", solve2a("data/input.txt"));
 }
